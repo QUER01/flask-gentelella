@@ -1,10 +1,12 @@
 from config import DebugConfig
+from config import Config
 from flask import Flask
 from flask_migrate import Migrate
 from importlib import import_module
 from logging import basicConfig, DEBUG, getLogger, StreamHandler
 from os.path import abspath, dirname, join, pardir
 import sys
+
 
 # prevent python from writing *.pyc files / __pycache__ folders
 sys.dont_write_bytecode = True
@@ -42,6 +44,7 @@ def configure_login_manager(app, User):
 
 
 def configure_database(app):
+    print('Creating the Database')
     create_database()
     Migrate(app, db)
 
@@ -63,13 +66,21 @@ def create_app():
     register_blueprints(app)
     from base.models import User
     configure_login_manager(app, User)
+
+
     configure_database(app)
     configure_logs(app)
     return app
 
 
+
+
+
 app = create_app()
 
+@app.context_processor
+def inject_appname():
+    return dict(ConfigAppname=Config.APPLICATION_NAME)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, threaded=True)

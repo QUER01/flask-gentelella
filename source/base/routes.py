@@ -6,6 +6,11 @@ from flask_login import (
     login_user,
     logout_user
 )
+
+from config import Config
+print("Starting "+ Config.APPLICATION_NAME)
+
+
 from .forms import LoginForm, CreateAccountForm
 
 # start the login system
@@ -31,7 +36,7 @@ def route_default():
 @blueprint.route('/<template>')
 @login_required
 def route_template(template):
-    return render_template(template + '.html')
+    return render_template(template + '.html' )
 
 
 @blueprint.route('/fixed_<template>')
@@ -71,6 +76,7 @@ def login():
             login_form=login_form,
             create_account_form=create_account_form
         )
+
     return redirect(url_for('home_blueprint.index'))
 
 
